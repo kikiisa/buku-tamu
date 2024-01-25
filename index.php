@@ -9,89 +9,183 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Halaman Login | Sistem Informasi Buku Tamu</title>
+    <title>Sistem Informasi Buku Tamu</title>
 
-    <link rel="icon" href="asets/img/logo dukcapil.png" type="image/x-icon">
-
-    <!-- Custom fonts for this template-->
     <link href="asets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="asets/css/sb-admin-2.min.css" rel="stylesheet">
-
+    <link href="asets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gradient-success">
+    <?php include "koneksi.php"; ?>
+    <?php
+
+    $category = mysqli_query($koneksi, "SELECT * FROM kategori");
+
+    if (isset($_POST['bsimpan'])) {
+        $tgl = date('Y-m-d');
+        $nama = htmlspecialchars($_POST['nama'], ENT_QUOTES);
+        $alamat = htmlspecialchars($_POST['alamat'], ENT_QUOTES);
+        $tujuan = htmlspecialchars($_POST['tujuan'], ENT_QUOTES);
+        $nope = htmlspecialchars($_POST['nope'], ENT_QUOTES);
+        $simpan = mysqli_query($koneksi, "INSERT INTO ttamu VALUES('','$tgl','$nama','$alamat', '$tujuan', '$nope')");
+
+        if ($simpan) {
+            echo "<script>alert('Simpan Data Sukses, Terima Kasih');
+    document.location='?'</script>";
+        } else {
+            echo "<script>alert('Simpan Data Gagal');
+    document.location='?'</script>";
+        }
+    }
+    ?>
+    <style>
+        #my_camera {
+            width: 100%;
+            /* Make the image fill the width of the div */
+            height: auto;
+            /* Maintain the image's aspect ratio */
+        }
+    </style>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand  text-center" href="#">
+                <img src="asets/img/logodukcapil.png" width="30">
+                <strong>
+                    SISTEM INFORMASI BUKU TAMU
+                </strong>
+            </a>
+            <div class="ml-auto">
+                <a href="login.php" class="btn btn-primary">Login Admin</a>
+            </div>
+        </div>
+    </nav>
 
     <div class="container">
 
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
+        <div class="row mt-2 justify-content-center">
+            <div class="col-lg-6 mb-3">
+                <div class="card shadow bg-gradient-light">
+                    <div class="card-body">
 
-            <div class="col-xl-10 col-lg-12 col-md-9">
-
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg-6 d-lg-block bg-success shadow-lg p-5 text-center">
-                                <img src="asets/img/logo.png" width="200">
-                                <h3 class="text-white">Sistem Informasi Buku Tamu<br> Dinas Dukcapil Bone Bolango</b></h3>
-
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
-                                    </div>
-                                    <form class="user" action="
-                                    cek_login.php" method="POST">
-                                        <div class="form-group">
-                                            <input type="text" name="username" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Enter Address...">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" name="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Password">
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
-                                               
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-primary btn-user btn-block">Login</button>
-                                        
-                                        <hr>
-                                        
-                                    </form>
-                                    <hr>
-                                    
-                            </div>
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900">Identitas Tamu</h1>
                         </div>
+                        <form class="user" method="POST">
+                            <div class="card mb-2">
+                                <div class="row justify-content-center">
+                                    <div id="my_camera">
+                                    </div>
+                                    <div id="my_result">
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="javascript:take_snapshot();" class="btn btn-primary mb-3" id="snap">Ambil</a>
+                            <a href="javascript:take_reset();" class="btn btn-danger  mb-3" id="snap">Reset</a>
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-user nama" name="nama" placeholder="Nama Tamu" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-user alamat" name="alamat" placeholder="Alamat Tamu" required>
+                            </div>
+                            <div class="form-group">
+                                <select name="category" id="category" class="form-control category">
+                                    <option value="" selected disabled>--Pilih Kategori Tamu--</option>
+                                    <?php while ($kategori = mysqli_fetch_array($category)) { ?>
+                                        <option value="<?= $kategori["id"] ?>"><?= $kategori["category"] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-user tujuan" name="tujuan" placeholder="Tujuan Tamu" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-user nope" name="nope" placeholder="No.hp Tamu" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-user from" name="from" placeholder="Asal Tamu" required>
+                            </div>
+                            <button type="submit" name="bsimpan" class="btn btn-primary btn-user btn-block">Simpan Data</button>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
+    <script src="./asets/js/axios.min.js"></script>
+    <script src="./asets/js/webcam.min.js"></script>
+    <script language="javascript">
+        Webcam.set({
+            width: 410,
+            height: 360,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+        Webcam.attach('#my_camera');
+    </script>
+    <script>
+        const my_camera = document.getElementById('my_camera');
+        const submitForm = document.querySelector(".user");
+        let dataImage = ""
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="asets/vendor/jquery/jquery.min.js"></script>
-    <script src="asets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        function take_snapshot() {
+            Webcam.snap(function(data_uri) {
+                my_camera.hidden = true
+                dataImage = data_uri
 
-    <!-- Core plugin JavaScript-->
-    <script src="asets/vendor/jquery-easing/jquery.easing.min.js"></script>
+                document.getElementById('my_result').innerHTML = '<img src="' + data_uri + '"/>';
+            });
+        }
 
-    <!-- Custom scripts for all pages-->
-    <script src="asets/js/sb-admin-2.min.js"></script>
+        function dataURLToBlob(dataUrl) {
+            var parts = dataUrl.split(';base64,');
+            var contentType = parts[0].split(':')[1];
+            var raw = window.atob(parts[1]);
+            var rawLength = raw.length;
+            var uInt8Array = new Uint8Array(rawLength);
 
+            for (var i = 0; i < rawLength; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+            }
+
+            return new Blob([uInt8Array], {
+                type: contentType
+            });
+        }
+
+        function take_reset() {
+            my_camera.hidden = false
+            document.getElementById('my_result').innerHTML = "";
+        }
+
+        submitForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const form = new FormData();
+            let blobImage = dataURLToBlob(dataImage);
+            form.append("nama", document.querySelector(".nama").value)
+            form.append("alamat", document.querySelector(".alamat").value)
+            form.append("tujuan", document.querySelector(".tujuan").value)
+            form.append("nope", document.querySelector(".nope").value)
+            form.append("asal", document.querySelector(".from").value)
+            form.append("category", document.querySelector(".category").value)
+            form.append("image", blobImage)
+            try {
+                const response = await axios.post("api.php", form);
+                console.log(response);
+                if (response.data.status) {
+                    window.location.reload()
+                    alert("data berhasil di input");
+                } else {
+                    alert("terjadi kesalahan")
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
+        });
+    </script>
+    ?>
+    <?php include "footer.php"; ?>
 </body>
 
 </html>
