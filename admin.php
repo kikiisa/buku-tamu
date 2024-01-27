@@ -7,8 +7,9 @@
     <div class="col-lg-12">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Data Tamu Hari ini [<?= date('d-m-Y') ?>]</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Data Tamu</h6>
             </div>
+            
             <div class="card-body">
                 <a href="rekapitulasi.php" class="btn btn-success mb-3"><i class="fa fa-table"></i> Rekapitulasi Data Tamu</a>
                 <a href="logout.php" class="btn btn-danger mb-3"><i class="fa fa-sign-out-alt"></i> Logout</a>
@@ -45,10 +46,10 @@
                         <tbody>
                             <?php
                             $tgl = date('Y-m-d'); //2023-11-15
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM ttamu INNER JOIN kategori ON kategori.id = ttamu.kategori_id where tanggal like '%$tgl%' order by ttamu.id desc ");
-    
+                            $tampil = mysqli_query($koneksi, "SELECT ttamu.id,ttamu.nama,ttamu.alamat,ttamu.tujuan,ttamu.asal,ttamu.nope,ttamu.tanggal,ttamu.kategori_id,kategori.category,ttamu.image FROM ttamu INNER JOIN kategori ON kategori.id = ttamu.kategori_id  order by ttamu.id desc ");
+                            
                             $no = 1;
-                            while ($data = mysqli_fetch_array($tampil)) {
+                            while ($data = mysqli_fetch_assoc($tampil)) {
                             ?>
                                 <tr>
                                     <td><?= $no++ ?></td>

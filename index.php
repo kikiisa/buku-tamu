@@ -63,7 +63,6 @@
     </nav>
 
     <div class="container">
-
         <div class="row mt-2 justify-content-center">
             <div class="col-lg-6 mb-3">
                 <div class="card shadow bg-gradient-light">
@@ -107,10 +106,12 @@
                                 <input type="text" class="form-control form-control-user from" name="from" placeholder="Asal Tamu" required>
                             </div>
                             <button type="submit" name="bsimpan" class="btn btn-primary btn-user btn-block">Simpan Data</button>
-                    </div>
+                        </form>
+                        </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <script src="./asets/js/axios.min.js"></script>
     <script src="./asets/js/webcam.min.js"></script>
