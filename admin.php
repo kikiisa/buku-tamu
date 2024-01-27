@@ -4,12 +4,22 @@
     <h2 class="text-white">Sistem Informasi Buku Tamu <br> </h2>
 </div>
 <div class="row mt-2 justify-content-center ext-center">
-    <div class="col-lg-12">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Statistik Data</h6>
+            </div>
+            <div class="card-body">
+                <canvas class="w-100" id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Data Tamu</h6>
             </div>
-            
+
             <div class="card-body">
                 <a href="rekapitulasi.php" class="btn btn-success mb-3"><i class="fa fa-table"></i> Rekapitulasi Data Tamu</a>
                 <a href="logout.php" class="btn btn-danger mb-3"><i class="fa fa-sign-out-alt"></i> Logout</a>
@@ -47,7 +57,7 @@
                             <?php
                             $tgl = date('Y-m-d'); //2023-11-15
                             $tampil = mysqli_query($koneksi, "SELECT ttamu.id,ttamu.nama,ttamu.alamat,ttamu.tujuan,ttamu.asal,ttamu.nope,ttamu.tanggal,ttamu.kategori_id,kategori.category,ttamu.image FROM ttamu INNER JOIN kategori ON kategori.id = ttamu.kategori_id  order by ttamu.id desc ");
-                            
+
                             $no = 1;
                             while ($data = mysqli_fetch_assoc($tampil)) {
                             ?>
@@ -73,4 +83,32 @@
             </div>
         </div>
     </div>
+    <script src="/asets/vendor/chart.js/Chart.min.js"></script>
+    <script src="/asets/vendor/axios/axios.min.js"></script>
+    <script>
+        const ctx = document.getElementById('myChart');
+        const fetchData = async () => {
+            const response = await axios.get("api.php")
+            const {data,labels} = response.data
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels:labels,
+                    datasets: [{
+                        label: '# of Votes',
+                        data: data,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        fetchData();
+    </script>
     <?php include "footer.php"; ?>
