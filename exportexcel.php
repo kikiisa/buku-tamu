@@ -62,8 +62,8 @@ include "koneksi.php";
                             <td><?= $data['nama'] ?></td>
                             <td><?= $data['alamat'] ?></td>
                             <td><?= $data['tujuan'] ?></td>
-                            <td><?= $data['nope'] ?></td>
                             <td><?= $data['asal'] ?></td>
+                            <td><?= $data['nope'] ?></td>
                             <td><img src="<?= $data['image'] ?>" width="90" alt="" srcset=""></td>
                         </tr>
                         <?php } ?> 
